@@ -7,3 +7,6 @@
 4. Make shots and share it!
 
 You can try this application hosted on: http://camagram.esy.es/ with (login: test, password: testpassword)
+
+The application is under creating stage. Comments, likes, deleting photos is unavailable.
+
