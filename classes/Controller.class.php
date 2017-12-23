@@ -1,18 +1,21 @@
 <?php
 	class Controller {
-		protected $request;
-		protected $action;	
+		protected $_action;	
+		protected $_params;
+		protected $_params_get;
+
 		
-		public function __construct($action, $request) {
-			$this->action = $action;
-			$this->request = $request;
+		public function __construct($action, $params, $params_get) {
+			$this->_action = $action;
+			$this->_params = $params;
+			$this->_params_get = $params_get;
 		}
 
 		public function executeAction() {
-			return $this->{$this->action}();
+			return $this->{$this->_action}();
 		}
 
-		public function displayView($user_view, $gallery_view, $view_file) {
+		public function displayView($user_view, $view_data, $view_file) {
 			require_once 'views/main.php';
 		}
 	}

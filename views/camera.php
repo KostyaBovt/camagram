@@ -1,42 +1,63 @@
 <div class="container-camera">
 	<div class="main-camera">
-			<div class="video">
+			<div class="video" style="position: relative;">
+        <img id="video_sticker" style="position: absolute; left:150px; top:90px; width:170px;" src="">
 				<video id="video" autoplay="true"></video>
 				<canvas id="canvas" hidden="true"></canvas>
-				<div class="output">
-					<img id="photo" alt="the screen caprure will appear in this box">
+				<div class="output" id="output" style="display:none">
+					<img id="photo">
 				</div>
 			</div>
 			<div class="video-buttons">
-				<button id="startbutton">Capture</button>
-				<button id="postbutton">Post photo</button>
+        <button id="startbutton">Capture</button>
+        <button id="cancelbutton" style="display:none">Cancel</button>
+				<button id="postbutton" disabled>Post photo</button>
+        <label for="upload-photo">Choose file to upload</label>
+        <input type="file" name="photo" id="upload-photo"/>
 			</div>
-<!-- 		<div class="images-camera">
-			<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/putin.png"></div>
-			<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/obama.png"></div>
-			<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/trump.png"></div>
-			<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/cage.png"></div>
-			<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/smith.png"></div>
-		</div> -->
+		<div class="images-camera">
+      <?php 
+        foreach ($view_data['stickers'] as $sticker) {
+          echo '<div class="image-camera"><img id="' . $sticker->id . '" src="/assets/img/' . $sticker->id .'.png"></div>';
+        }
+      ?>
+		</div>
 	</div>
 
 
-<!-- 	<div class="sidebar-camera">
-		<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/gallery-photo1.jpg"></div>
-		<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/gallery-photo2.jpg"></div>
-		<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/gallery-photo3.jpg"></div>
-		<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/gallery-photo1.jpg"></div>
-		<div class="image-camera"><img src="<?php echo ROOT_PATH; ?>/assets/img/gallery-photo2.jpg"></div>
-	</div> -->
+ 	<div class="sidebar-camera">
+		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
+		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
+		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
+		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
+		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
+	</div>
 </div>
 
 <script type="text/javascript">
 
+var currentSticker = null;
+
+function addStickers() {
+  var stickers = document.querySelectorAll(".image-camera img");
+  console.log(stickers);
+  for (var i = stickers.length - 1; i >= 0; i--) {
+    stickers[i].addEventListener('click', function(e) {
+      console.log(e.target.id, e.target.src);
+      currentSticker = e.target;
+      var videoImg = document.getElementById("video_sticker");
+      videoImg.src = currentSticker.src; 
+    });
+  }
+}
+
 (function() {
+  addStickers();
+
   // The width and height of the captured photo. We will set the
   // width to the value defined here, but the height will be
   // calculated based on the aspect ratio of the input stream.
-  
+
   var width = 500;    // We will scale the photo width to this
   var height = 0;     // This will be computed based on the input stream
 
@@ -58,6 +79,9 @@
     canvas = document.getElementById('canvas');
     photo = document.getElementById('photo');
     startbutton = document.getElementById('startbutton');
+    cancelbutton = document.getElementById('cancelbutton');
+    output = document.getElementById('output');
+    postbutton = document.getElementById('postbutton');
 
     navigator.getMedia = ( navigator.getUserMedia ||
                            navigator.webkitGetUserMedia ||
@@ -106,6 +130,16 @@
       takepicture();
       ev.preventDefault();
     }, false);
+
+    cancelbutton.addEventListener('click', function(ev){
+      startbutton.style.display='inline';
+      cancelbutton.style.display='none';
+      output.style.display='none';
+      video.style.display='block';
+      postbutton.setAttribute('disabled', 'true');
+      clearphoto();     
+      ev.preventDefault();
+    }, false);
     
     clearphoto();
   }
@@ -137,6 +171,11 @@
     
       var data = canvas.toDataURL('image/png');
       photo.setAttribute('src', data);
+      output.style.display='block';
+      video.style.display='none';
+      startbutton.style.display='none';
+      cancelbutton.style.display='inline';      
+      postbutton.removeAttribute('disabled');      
     } else {
       clearphoto();
     }
@@ -149,12 +188,11 @@
 
 document.getElementById('postbutton').addEventListener('click', function() {
 	var post_image = document.getElementById('photo').src;
-	// alert(post_image);
 	
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', 'shot', true);
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhr.send("image=" + post_image);
+	xhr.send("image=" + post_image + "&sticker_id=" + currentSticker.id);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
         var response = xhr.responseText;

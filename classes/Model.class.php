@@ -91,6 +91,10 @@
 			$this->query("UPDATE " . $table . " SET " . $set . " WHERE " . $where[0] ." " . $where[1] . " " . $where[2], $fields);
 		}
 
+		public function delete($table, $where) {
+			$this->query("delete from " . $table . " WHERE " . $where[0] . " " . $where[1] . " " . $where[2]);
+		}
+
 		public function error() {
 			return $this->_error;
 		}
@@ -101,6 +105,10 @@
 
 		public function results() {
 			return $this->_results;
+		}
+
+		public function lastInsertId2() {
+			return $this->_pdo->lastInsertId();
 		}
 
 

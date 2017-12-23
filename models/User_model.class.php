@@ -79,11 +79,10 @@
 		}
 
 
-		public function confirm() {
+		public function confirm($params) {
 			
-			$get = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
-			$get_confirm_hash = $get['id2'];
-			$get_email_hash = $get['id1'];
+			$get_email_hash = $params[0];
+			$get_confirm_hash = $params[1];
 			
 			$this->query('SELECT * FROM confirm WHERE hash = "' . $get_confirm_hash . '"');
 
@@ -132,6 +131,69 @@
 				die();
 			}
 
+		}
+
+		public function getUserData($user) {
+			if (isset($user['email'])) {
+				$this->query("SELECT * FROM users WHERE `email` = ?", array($user['email']));
+				if ($this->count() && !$this->error()) {
+					return $this->results()[0];
+				}
+				return FALSE;
+			}
+						
+			if (isset($user['id'])) {
+				$this->query("SELECT * FROM users WHERE `id` = ?", array($user['id']));
+				if ($this->count() && !$this->error()) {
+					return $this->results()[0];
+				}
+				return FALSE;
+			}
+
+			if (isset($user['login'])) {
+				$this->query("SELECT * FROM users WHERE `login` = ?", array($user['login']));
+				if ($this->count() && !$this->error()) {
+					return $this->results()[0];
+				}
+				return FALSE;
+			}
+
+			return FALSE;
+
+		}
+
+
+		public function addResetHash($user_id, $reset_hash) {
+			$this->query('DELETE FROM reset WHERE user_id = ?', array($user_id));
+			if ($this->error()) {
+				return FALSE;
+			}
+
+			$this->insert('reset', array(
+				'id' => NULL,
+				'user_id' => $user_id,
+				'hash' => $reset_hash
+			));
+			if ($this->error()) {
+				return FALSE;
+			}
+			return TRUE;
+		}
+
+		public function ckeckResetHash($reset_hash) {
+			$this->query('SELECT * FROM reset WHERE hash = ?', array($reset_hash));
+			if ($this->error() || !$this->count()) {
+				return FALSE;
+			}
+			return $this->results()[0]->user_id;
+		}
+
+		public function updatePassword($user_id, $password) {
+			$this->update('users', array('password' => $password), array('id', '=', $user_id));
+			if ($this->error() || !$this->count()) {
+				return FALSE;
+			}
+			return TRUE;
 		}
 
 	}

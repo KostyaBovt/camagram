@@ -110,11 +110,12 @@ a {
 }
 
 .video-buttons button {
-	border: 0px;
+	border-style: 1px solid black;
 	margin: 0px;
 	padding: 0px;
 	height: 40px;
-	width: 248px;
+	width: 48%;
+
 }
 
 .images-camera {
@@ -130,6 +131,10 @@ a {
 
 .image-camera img {
 	width: 100%;
+}
+
+.image-camera img[active] {
+	border: 1px solid red;
 }
 
 .sidebar-camera {
@@ -169,6 +174,10 @@ a {
 	width: 500px;
 	margin: auto;
 	margin-top: 20px;
+}
+
+.photo-likes .liked {
+	color: red;
 }
 
 .photo-comment-author {

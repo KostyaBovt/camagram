@@ -10,15 +10,14 @@
 			}
 		}
 
-		public function getUserGallery($user_login) {
-			if (!$user_login) {
-				$user_id = Session::get('loggued_user');
-				$params = array($user_id);
-				$this->query('SELECT * FROM photos WHERE user_id = ? ORDER BY photos.photo_date DESC LIMIT 12', $params);
-			} else {
-				$params = array($user_login);
-				$this->query('SELECT * FROM photos INNER JOIN users	ON photos.user_id = users.id WHERE users.login = ? ORDER BY photos.photo_date DESC LIMIT 12', $params);
+		public function getUserGallery($user_id) {
+			if (!$user_id) {
+				return FALSE;
 			}
+
+			$params = array($user_id);
+			$this->query('SELECT users.id AS user_id, photos.id AS photo_id, photos.*, users.* FROM photos INNER JOIN users	ON photos.user_id = users.id WHERE user_id = ? ORDER BY photos.photo_date DESC LIMIT 12', $params);
+
 			return $this->results();
 		}
 

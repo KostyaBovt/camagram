@@ -1,15 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.0
--- https://www.phpmyadmin.net/
+-- version 4.5.4.1deb2ubuntu2
+-- http://www.phpmyadmin.net
 --
--- Хост: localhost:3306
--- Время создания: Июл 10 2017 г., 06:39
--- Версия сервера: 5.6.35
--- Версия PHP: 5.6.30
+-- Хост: localhost
+-- Время создания: Авг 05 2017 г., 20:49
+-- Версия сервера: 5.7.17-0ubuntu0.16.04.2
+-- Версия PHP: 7.0.15-0ubuntu0.16.04.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -21,8 +19,22 @@ SET time_zone = "+00:00";
 --
 -- База данных: `camagram`
 --
-CREATE DATABASE IF NOT EXISTS `camagram` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `camagram` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 USE `camagram`;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `comments`
+--
+
+CREATE TABLE `comments` (
+  `id` int(11) NOT NULL,
+  `photo_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `comment` text NOT NULL,
+  `comment_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -36,15 +48,18 @@ CREATE TABLE `confirm` (
   `hash` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
 --
--- Дамп данных таблицы `confirm`
+-- Структура таблицы `likes`
 --
 
-INSERT INTO `confirm` (`id`, `user_id`, `hash`) VALUES
-(1, 1, '9f77f864b10c07cb12cda9a02dd28cee'),
-(2, 2, '80293bbc34c94c67bfc8c3f63ae862c2'),
-(3, 3, 'a03d402afc8606b2e8e6c4258ed95c21'),
-(4, 4, '488419bc098d383dd0120a55efdb1dd2');
+CREATE TABLE `likes` (
+  `id` int(11) NOT NULL,
+  `photo_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `like_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -59,22 +74,17 @@ CREATE TABLE `photos` (
   `photo_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
 --
--- Дамп данных таблицы `photos`
+-- Структура таблицы `reset`
 --
 
-INSERT INTO `photos` (`id`, `user_id`, `file_name`, `photo_date`) VALUES
-(1, 2, 'd71d4c2f5884e59f440ef9090d909e56.png', '2017-07-10 11:10:48'),
-(2, 2, '460ade0f39ac7501db3b0912b829efdb.png', '2017-07-10 11:11:39'),
-(3, 2, '21e4ed58a5d8c137017db2bbfd34c1d4.png', '2017-07-10 15:53:14'),
-(4, 2, '7b80d0d5524ce5d1abce81225ca03bf1.png', '2017-07-10 15:53:44'),
-(5, 2, '9b7e9da5652f7af214cd48561dffc9b7.png', '2017-07-10 15:55:16'),
-(6, 2, '96206d2698a33ba84f3fea0c2082617e.png', '2017-07-10 15:56:19'),
-(7, 2, '259296262c5d3b33dae1160000d67870.png', '2017-07-10 16:00:20'),
-(8, 4, 'c46449b30aae5f6203576239769afe54.png', '2017-07-10 16:31:57'),
-(9, 4, '554d75542ecbfb84058f7141958a3e62.png', '2017-07-10 16:32:02'),
-(10, 4, '9d16b9531db3ee13fe678bbba82d61bd.png', '2017-07-10 16:32:35'),
-(11, 4, '29dae24720761260f2156c12cd4927c1.png', '2017-07-10 16:32:40');
+CREATE TABLE `reset` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `hash` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -88,32 +98,49 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `confirmed` int(11) NOT NULL DEFAULT '0'
+  `confirmed` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `users`
---
-
-INSERT INTO `users` (`id`, `login`, `password`, `name`, `email`, `confirmed`) VALUES
-(2, 'kos', '1bbd886460827015e5d605ed44252251', 'kostya bovt', 'kostya.bovt@gmail.com', 1),
-(4, 'test', 'e16b2ab8d12314bf4efbd6203906ea6c', 'test test', 'test@test.test', 1);
 
 --
 -- Индексы сохранённых таблиц
 --
 
 --
+-- Индексы таблицы `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `photo_id` (`photo_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Индексы таблицы `confirm`
 --
 ALTER TABLE `confirm`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Индексы таблицы `likes`
+--
+ALTER TABLE `likes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `photo_id` (`photo_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Индексы таблицы `photos`
 --
 ALTER TABLE `photos`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Индексы таблицы `reset`
+--
+ALTER TABLE `reset`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Индексы таблицы `users`
@@ -126,20 +153,70 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+--
 -- AUTO_INCREMENT для таблицы `confirm`
 --
 ALTER TABLE `confirm`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
+-- AUTO_INCREMENT для таблицы `likes`
+--
+ALTER TABLE `likes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+--
 -- AUTO_INCREMENT для таблицы `photos`
 --
 ALTER TABLE `photos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT для таблицы `reset`
+--
+ALTER TABLE `reset`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;COMMIT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- Ограничения внешнего ключа сохраненных таблиц
+--
+
+--
+-- Ограничения внешнего ключа таблицы `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`photo_id`) REFERENCES `photos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `confirm`
+--
+ALTER TABLE `confirm`
+  ADD CONSTRAINT `confirm_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `likes`
+--
+ALTER TABLE `likes`
+  ADD CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`photo_id`) REFERENCES `photos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `photos`
+--
+ALTER TABLE `photos`
+  ADD CONSTRAINT `photos_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `reset`
+--
+ALTER TABLE `reset`
+  ADD CONSTRAINT `reset_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

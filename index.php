@@ -6,6 +6,21 @@
 
 	require('config/database.php');
 
+	function vdf($var, $var_name) {
+	    $myfile = fopen("var_dump_"  . microtime(true) . "_" . $var_name . ".txt", "w") or die("Unable to open file!");
+	    ob_start();
+	    var_dump($var);
+	    $txt = ob_get_clean();
+	    fwrite($myfile, $txt);
+        fclose($myfile);
+	}
+
+	$rootPath = dirname($_SERVER['DOCUMENT_ROOT']);
+	$url = current(array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))));
+	$url2 = $_SERVER['REQUEST_URI'];
+	// vdf($rootPath, 'root_path');
+	// vdf($url2, 'url');
+
 	spl_autoload_register(function($class) {
 		$sources = array(
 			'classes/' . $class . '.class.php',
@@ -20,7 +35,7 @@
 	});
 
 
-	$bootstrap = new Bootstrap($_GET);
+	$bootstrap = new Bootstrap();
 
 	$controller = $bootstrap->createController();
 	if($controller){

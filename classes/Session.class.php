@@ -23,7 +23,11 @@
 		} 
 
 		static function get($name) {
-			return $_SESSION[$name];
+			if (Session::exists($name)) {
+				return $_SESSION[$name];
+			} else {
+				return FALSE;
+			}
 		} 
 
 		static function exists($name) {

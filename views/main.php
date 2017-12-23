@@ -2,14 +2,21 @@
 <html>
 <head>
 	<title>Camagram</title>
-	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/index.css">
-	<link rel="icon" sizes="192x192" href="<?php echo ROOT_PATH; ?>assets/img/icon.png">
+	<link rel="stylesheet" href="/assets/css/index.css">
+	<link rel="icon" sizes="192x192" href="/assets/img/icon.png">
+	<?php 
+		 if (isset($view_data['js_file'])) {
+		 	echo '<script type="text/javascript" src="' . JS_PATH;
+		 	echo $view_data['js_file'];
+		 	echo '"></script>';
+		 }
+	?>
 </head>
 <body>
 	<div class="all">
 		<div class="header">
 			<div class="logo">
-				<a href="<?php echo ROOT_PATH; ?>"><img src="<?php echo ROOT_PATH; ?>assets/img/Logo.png"></a>
+				<a href="<?php echo ROOT_PATH; ?>"><img src="/assets/img/Logo.png"></a>
 				<a href="<?php echo ROOT_PATH; ?>"><span id="logo-text">Camagram</span></a>
 			</div>
 			<div class="auth-user">
