@@ -201,4 +201,30 @@ document.getElementById('postbutton').addEventListener('click', function() {
 	};
 });
 
+function handleFileSelect(evt) {
+    var file = evt.target.file; // FileList object
+
+    // Only process image files.
+    if (!file.type.match('image.*')) {
+      return;
+    }
+
+    var reader = new FileReader();
+
+    // Closure to capture the file information.
+    reader.onload = (function(theFile) {
+      return function(e) {
+        // Render thumbnail.
+        var span = document.createElement('span');
+        photo = document.getElementById('photo');
+        photo.setAttribute('src', e.target.result);
+      };
+    })(f);
+
+    // Read in the image file as a data URL.
+    reader.readAsDataURL(file);
+}
+
+document.getElementById('upload-photo').addEventListener('change', handleFileSelect, false);
+
 </script>
