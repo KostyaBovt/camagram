@@ -9,11 +9,11 @@
 				</div>
 			</div>
 			<div class="video-buttons">
-        <button id="startbutton">Capture</button>
+        <button id="startbutton" disabled>Capture</button>
         <button id="cancelbutton" style="display:none">Cancel</button>
 				<button id="postbutton" disabled>Post photo</button>
         <label for="upload-photo">Choose file to upload</label>
-        <input type="file" name="photo" id="upload-photo"/>
+        <input type="file" name="files[]" id="upload-photo"/>
 			</div>
 		<div class="images-camera">
       <?php 
@@ -37,16 +37,21 @@
 <script type="text/javascript">
 
 var currentSticker = null;
+var photoUploaded = null;
 
 function addStickers() {
   var stickers = document.querySelectorAll(".image-camera img");
-  console.log(stickers);
   for (var i = stickers.length - 1; i >= 0; i--) {
     stickers[i].addEventListener('click', function(e) {
-      console.log(e.target.id, e.target.src);
       currentSticker = e.target;
       var videoImg = document.getElementById("video_sticker");
-      videoImg.src = currentSticker.src; 
+      videoImg.src = currentSticker.src;
+      startbutton = document.getElementById('startbutton');
+      startbutton.removeAttribute('disabled'); 
+      postbutton = document.getElementById('postbutton');
+      if (photoUploaded) {
+        postbutton.removeAttribute('disabled'); 
+      }
     });
   }
 }
@@ -174,8 +179,10 @@ function addStickers() {
       output.style.display='block';
       video.style.display='none';
       startbutton.style.display='none';
-      cancelbutton.style.display='inline';      
-      postbutton.removeAttribute('disabled');      
+      cancelbutton.style.display='inline';
+      if (currentSticker) {
+        postbutton.removeAttribute('disabled');      
+      }
     } else {
       clearphoto();
     }
@@ -196,13 +203,34 @@ document.getElementById('postbutton').addEventListener('click', function() {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
         var response = xhr.responseText;
-			  alert("Photo was saved!");
+
+        if (response == "1") {
+          alert("Photo was saved!");        
+        } else {
+  			  alert("Something going wrong...Try again!");
+        }
+
+        video = document.getElementById('video');
+        startbutton = document.getElementById('startbutton');
+        cancelbutton = document.getElementById('cancelbutton');
+        output = document.getElementById('output');
+        postbutton = document.getElementById('postbutton');
+
+        startbutton.style.display='inline';
+        cancelbutton.style.display='none';
+        output.style.display='none';
+        video.style.display='block';
+        postbutton.setAttribute('disabled', 'true');
+        startbutton.setAttribute('disabled', 'true');
+        var videoImg = document.getElementById("video_sticker");
+        videoImg.src = "";
+        currentSticker = null;
 		}
 	};
 });
 
 function handleFileSelect(evt) {
-    var file = evt.target.file; // FileList object
+    var file = evt.target.files[0]; // FileList object
 
     // Only process image files.
     if (!file.type.match('image.*')) {
@@ -218,8 +246,24 @@ function handleFileSelect(evt) {
         var span = document.createElement('span');
         photo = document.getElementById('photo');
         photo.setAttribute('src', e.target.result);
+
+        photoUploaded = true;
+
+        video = document.getElementById('video');
+        startbutton = document.getElementById('startbutton');
+        cancelbutton = document.getElementById('cancelbutton');
+        output = document.getElementById('output');
+        postbutton = document.getElementById('postbutton');
+
+        output.style.display='block';
+        video.style.display='none';
+        startbutton.style.display='none';
+        cancelbutton.style.display='inline';   
+        if (currentSticker) {
+          postbutton.removeAttribute('disabled');
+        }   
       };
-    })(f);
+    })(file);
 
     // Read in the image file as a data URL.
     reader.readAsDataURL(file);

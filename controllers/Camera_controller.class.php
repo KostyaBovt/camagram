@@ -14,7 +14,8 @@
 			$tmp_file_name = Hash::generate(10) . '.png';
 			$tmp_file = fopen('assets/tmp/' . $tmp_file_name, "wb");
 			if (!$tmp_file) {
-				return false;
+				echo "0";
+				return;
 			}
 			fwrite($tmp_file, $content);
 			fclose($tmp_file);
@@ -32,6 +33,7 @@
 			$gallery_model = new Gallery_model();
 			$gallery_model->addNewPhoto($file_name);
 			
+			echo "1";
 
 		}
 	}
