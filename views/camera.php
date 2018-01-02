@@ -231,9 +231,10 @@ document.getElementById('postbutton').addEventListener('click', function() {
 
 function handleFileSelect(evt) {
     var file = evt.target.files[0]; // FileList object
+    console.log(file.type);
 
     // Only process image files.
-    if (!file.type.match('image.*')) {
+    if (!file.type.match(/image\/(png|jpeg)/)) {
       return;
     }
 

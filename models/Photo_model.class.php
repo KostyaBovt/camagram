@@ -1,7 +1,7 @@
 <?php
 	class Photo_model extends Model {
 		public function getPhotoData($hash) {
-			$params = array($hash . '.png');
+			$params = array($hash . '.jpg');
 			$this->query('SELECT * FROM photos WHERE photos.file_name = ?', $params);
 			if ($this->count()) {
 				return $this->results()[0];

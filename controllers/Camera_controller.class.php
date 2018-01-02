@@ -10,8 +10,13 @@
 			$data = explode(',', $_POST['image']);
 			$data = str_replace(' ', '+', $data);
 			$content = base64_decode($data[1]);
+			
+			if (explode(":", explode(";", $data[0])[0])[1] == 'image/jpeg') {
+				vdf($data[0], 'jpeg');
+			}
 
-			$tmp_file_name = Hash::generate(10) . '.png';
+			// $tmp_file_name = Hash::generate(10) . '.png';
+			$tmp_file_name = Hash::generate(10) . '.jpg';
 			$tmp_file = fopen('assets/tmp/' . $tmp_file_name, "wb");
 			if (!$tmp_file) {
 				echo "0";
@@ -20,16 +25,19 @@
 			fwrite($tmp_file, $content);
 			fclose($tmp_file);
 
-			$tmp_img = imagecreatefrompng('assets/tmp/' . $tmp_file_name);
+			// $tmp_img = imagecreatefrompng('assets/tmp/' . $tmp_file_name);
+			$tmp_img = imagecreatefromjpeg('assets/tmp/' . $tmp_file_name);
 
-			$sticker_id = $_POST['sticker_id'];
-			$sticker_img = imagecreatefrompng('assets/img/' . $sticker_id . '.png');
+			// $sticker_id = $_POST['sticker_id'];
+			// $sticker_img = imagecreatefrompng('assets/img/' . $sticker_id . '.png');
 
-			imagecopymerge($tmp_img, $sticker_img, 150, 90, 0, 0, 350, 350, 100);
+			// imagecopymerge($tmp_img, $sticker_img, 150, 90, 0, 0, 350, 350, 100);
 			unlink('assets/tmp/' . $tmp_file_name);
 
-			$file_name = Hash::generate(10) . '.png';
-			imagepng($tmp_img, 'assets/photos/' . $file_name, 0);
+			// $file_name = Hash::generate(10) . '.png';
+			$file_name = Hash::generate(10) . '.jpg';
+			// imagepng($tmp_img, 'assets/photos/' . $file_name, 0);
+			imagejpeg($tmp_img, 'assets/photos/' . $file_name, 0);
 			$gallery_model = new Gallery_model();
 			$gallery_model->addNewPhoto($file_name);
 			
