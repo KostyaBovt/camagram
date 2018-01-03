@@ -200,14 +200,16 @@ document.getElementById('postbutton').addEventListener('click', function() {
 	xhr.open('POST', 'shot', true);
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhr.send("image=" + post_image + "&sticker_id=" + currentSticker.id);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
         var response = xhr.responseText;
 
         if (response == "1") {
           alert("Photo was saved!");        
+        } else if (response == "2") {
+          alert("Too large! must be less 5 Mbytes");
         } else {
-  			  alert("Something going wrong...Try again!");
+          alert("Something going wrong...Try again!");
         }
 
         video = document.getElementById('video');
@@ -225,16 +227,23 @@ document.getElementById('postbutton').addEventListener('click', function() {
         var videoImg = document.getElementById("video_sticker");
         videoImg.src = "";
         currentSticker = null;
-		}
+		} else if (xhr.readyState == 4){
+      alert("Some error occured!!!");
+    }
 	};
 });
 
 function handleFileSelect(evt) {
     var file = evt.target.files[0]; // FileList object
-    console.log(file.type);
 
     // Only process image files.
+    if (file.size > 5242880) {
+      alert("too large. max 5 mb!!");
+      return;
+    }
+
     if (!file.type.match(/image\/(png|jpeg)/)) {
+      alert("only jpeg or png!");
       return;
     }
 

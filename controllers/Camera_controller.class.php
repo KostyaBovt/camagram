@@ -9,10 +9,22 @@
 		public function Shot() {
 			$data = explode(',', $_POST['image']);
 			$data = str_replace(' ', '+', $data);
+
+			$B = strlen($data[1]) / 1.37;
+			$MB = $B / (1024 * 1024);
+			vdf($MB, 'MB');
+
+			if ($MB > 5) {
+				echo "2";
+				return;
+			}
+
 			$content = base64_decode($data[1]);
 			
-			if (explode(":", explode(";", $data[0])[0])[1] == 'image/jpeg') {
-				vdf($data[0], 'jpeg');
+			$mime_type = explode(":", explode(";", $data[0])[0])[1];
+			if ($mime_type != 'image/jpeg') {
+				echo "0";
+				return;				
 			}
 
 			// $tmp_file_name = Hash::generate(10) . '.png';
