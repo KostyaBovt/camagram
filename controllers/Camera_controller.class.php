@@ -29,27 +29,33 @@
 
 			// $tmp_file_name = Hash::generate(10) . '.png';
 			$tmp_file_name = Hash::generate(10) . '.jpg';
-			$tmp_file = fopen('assets/tmp/' . $tmp_file_name, "wb");
-			if (!$tmp_file) {
+			$source = imagecreatefromstring($content);
+			if (!$imageSave = imagejpeg($source, 'assets/tmp/' . $tmp_file_name, 100)) {
 				echo "0";
 				return;
 			}
-			fwrite($tmp_file, $content);
-			fclose($tmp_file);
+			imagedestroy($source);
+
+
+			// fwrite($tmp_file, $content);
+			// fclose($tmp_file);
 
 			// $tmp_img = imagecreatefrompng('assets/tmp/' . $tmp_file_name);
-			$tmp_img = imagecreatefromjpeg('assets/tmp/' . $tmp_file_name);
+			$tmp_img_source = imagecreatefromjpeg('assets/tmp/' . $tmp_file_name);
+			list($width, $height) = getimagesize('assets/tmp/' . $tmp_file_name);
+			$tmp_img_dst = imagecreatetruecolor(500, 375);
+			imagecopyresized($tmp_img_dst, $tmp_img_source, 0, 0, 0, 0, 500, 375, $width , $height);
 
 			// $sticker_id = $_POST['sticker_id'];
 			// $sticker_img = imagecreatefrompng('assets/img/' . $sticker_id . '.png');
 
 			// imagecopymerge($tmp_img, $sticker_img, 150, 90, 0, 0, 350, 350, 100);
-			unlink('assets/tmp/' . $tmp_file_name);
+			// unlink('assets/tmp/' . $tmp_file_name);
 
 			// $file_name = Hash::generate(10) . '.png';
 			$file_name = Hash::generate(10) . '.jpg';
 			// imagepng($tmp_img, 'assets/photos/' . $file_name, 0);
-			imagejpeg($tmp_img, 'assets/photos/' . $file_name, 0);
+			imagejpeg($tmp_img_dst, 'assets/photos/' . $file_name, 100);
 			$gallery_model = new Gallery_model();
 			$gallery_model->addNewPhoto($file_name);
 			
