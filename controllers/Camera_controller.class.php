@@ -6,6 +6,20 @@
 			$this->displayView(NULL, $view_data, 'views/camera.php');
 		}
 
+		private function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct) {
+	        // creating a cut resource
+	        $cut = imagecreatetruecolor($src_w, $src_h);
+
+	        // copying relevant section from background to the cut resource
+	        imagecopy($cut, $dst_im, 0, 0, $dst_x, $dst_y, $src_w, $src_h);
+	       
+	        // copying relevant section from watermark to the cut resource
+	        imagecopy($cut, $src_im, 0, 0, $src_x, $src_y, $src_w, $src_h);
+	       
+	        // insert cut resource to destination image
+	        imagecopymerge($dst_im, $cut, $dst_x, $dst_y, 0, 0, $src_w, $src_h, $pct);
+	    }
+
 		public function Shot() {
 			$data = explode(',', $_POST['image']);
 			$data = str_replace(' ', '+', $data);
@@ -59,40 +73,29 @@
 				// process...				
 			}
 			imagedestroy($source);
-			
 
 			list($width, $height) = getimagesize('assets/tmp/' . $tmp_file_name);
 			$tmp_img_dst = imagecreatetruecolor(500, 375);
 			imagecopyresized($tmp_img_dst, $tmp_img_source, 0, 0, 0, 0, 500, 375, $width , $height);
 
-
-			// jpg
-
 			// merge png
 			$sticker_id = $_POST['sticker_id'];
 			$sticker_img = imagecreatefrompng('assets/img/' . $sticker_id . '.png');
 
-			imagecopymerge($tmp_img_dst, $sticker_img, 150, 90, 0, 0, 175, 175, 100);
-			// unlink('assets/tmp/' . $tmp_file_name);
+			// $black = imagecolorallocate($sticker_img, 0, 0, 0);
+			// imagecolortransparent($sticker_img, $black);
 
-			// png
-			// $file_name = Hash::generate(10) . '.png';
-			
-			//jpg
+			$this->imagecopymerge_alpha($tmp_img_dst, $sticker_img, 150, 90, 0, 0, 170, 170, 100);
+			unlink('assets/tmp/' . $tmp_file_name);
+
 			$file_name = Hash::generate(10) . '.jpg';
-			
-			//jpg
-			// imagepng($tmp_img, 'assets/photos/' . $file_name, 0);
-			
-			//jpg
+
 			imagejpeg($tmp_img_dst, 'assets/photos/' . $file_name, 100);
-			
 
 			$gallery_model = new Gallery_model();
 			$gallery_model->addNewPhoto($file_name);
-			
-			echo "1";
 
+			echo "1";
 		}
 	}
 ?>

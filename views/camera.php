@@ -204,6 +204,8 @@ document.getElementById('postbutton').addEventListener('click', function() {
     if (xhr.readyState == 4 && xhr.status == 200) {
         var response = xhr.responseText;
 
+        document.querySelector('.sidebar-camera').innerHTML = '<img src="data:image/jpg;base64,' + 'ewffwefew' + '" />';
+
         if (response == "1") {
           alert("Photo was saved!");        
         } else if (response == "2") {
