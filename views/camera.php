@@ -26,12 +26,12 @@
 
 
  	<div class="sidebar-camera">
+<!-- 		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
 		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
 		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
 		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
 		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
-		<div class="sidebar-image-camera"><img src="<?php echo ROOT_PATH; ?>assets/img/test.png"></div>
-	</div>
+ -->	</div>
 </div>
 
 <script type="text/javascript">
@@ -204,15 +204,36 @@ document.getElementById('postbutton').addEventListener('click', function() {
     if (xhr.readyState == 4 && xhr.status == 200) {
         var response = xhr.responseText;
 
-        document.querySelector('.sidebar-camera').innerHTML = '<img src="data:image/jpg;base64,' + 'ewffwefew' + '" />';
+        response = JSON.parse(response);
 
-        if (response == "1") {
-          alert("Photo was saved!");        
-        } else if (response == "2") {
+        if (response.code == "1") {
+          // var parent_element = document.querySelector('.sidebar-camera');
+          // console.log('parent_element:');
+          // console.log(parent_element);
+
+          // var curr_images = document.querySelectorAll('.sidebar-camera .sidebar-image-camera');
+          // console.log('curr_images:');
+          // console.log(curr_images);
+
+          // if (curr_images.length > 4) {
+          //   parent_element.removeChild(curr_images[4]);
+          // }
+
+          var new_photo_div = document.createElement('div');
+          new_photo_div.className = "sidebar-image-camera";
+
+          var new_photo = document.createElement('img');
+          new_photo.src = 'data:image/jpg;base64,' + response.img;
+
+          new_photo_div.appendChild(new_photo);
+
+          document.querySelector('.sidebar-camera').prepend(new_photo_div);
+        } else if (response.code == "2") {
           alert("Too large! must be less 5 Mbytes");
         } else {
           alert("Something going wrong...Try again!");
         }
+
 
         video = document.getElementById('video');
         startbutton = document.getElementById('startbutton');

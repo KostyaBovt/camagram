@@ -28,7 +28,7 @@
 			$MB = $B / (1024 * 1024);
 
 			if ($MB > 5) {
-				echo "2";
+				echo json_encode(['code' => '2']);
 				return;
 			}
 
@@ -49,7 +49,7 @@
 			}
 
 			if (!$ext) {
-				echo "0";
+				echo json_encode(['code' => '0']);
 				return;				
 			}
 
@@ -59,18 +59,16 @@
 			// png
 			if ($ext == 'png') {
 				if (!$imageSave = imagepng($source, 'assets/tmp/' . $tmp_file_name, 0)) {
-					echo "0";
+					echo json_encode(['code' => '0']);
 					return;
 				}
 				$tmp_img_source = imagecreatefrompng('assets/tmp/' . $tmp_file_name);
-				// process...
 			} else {
 				if (!$imageSave = imagejpeg($source, 'assets/tmp/' . $tmp_file_name, 100)) {
-					echo "0";
+					echo json_encode(['code' => '0']);
 					return;
 				}
 				$tmp_img_source = imagecreatefromjpeg('assets/tmp/' . $tmp_file_name);
-				// process...				
 			}
 			imagedestroy($source);
 
@@ -95,7 +93,17 @@
 			$gallery_model = new Gallery_model();
 			$gallery_model->addNewPhoto($file_name);
 
-			echo "1";
+			ob_start();
+			imagejpeg($tmp_img_dst);
+			$response_img_string =  ob_get_contents();
+			ob_end_clean();
+
+			$response =  [
+				"code" => '1',
+				"img" => base64_encode($response_img_string)
+			];
+
+			echo json_encode($response);
 		}
 	}
 ?>
