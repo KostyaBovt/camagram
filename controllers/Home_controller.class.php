@@ -1,8 +1,18 @@
 <?php
 	class Home_controller extends Controller {
 		public function Index() {
+
+			$page = 1;
+			if (isset($this->_params_get['p'])) {
+				$page = (int)$this->_params_get['p'];
+				if ($page < 1) {
+					$page = 1;
+				}
+			}
+
 			$gallery_model = new Gallery_model();
-			$gallery_view = $gallery_model->getHomeGallery();
+			$gallery_view['photos'] = $gallery_model->getHomeGallery($page);
+			$gallery_view['curr_page'] = $page;
 			$this->displayView(NULL, $gallery_view, 'views/gallery.php');
 		}
 

@@ -31,6 +31,16 @@
 					echo '<div class="photo-gallery"><a href="/photo/index/' . $photo_id . '"><img src="' . $photo_src . '"></a></div>'; 
 				}
 			}
+			if ($view_data['curr_page'] == 1) {
+				$disabled = ' disabled';
+			} else {
+				$disabled = '';
+			}
+
+			vdf($view_data, 'view_data');
+
+			echo '<a href="' . ROOT_PATH . 'user/account/' . $view_data['user_data']->login . '?p=' . ($view_data['curr_page'] - 1) . '"><button' . $disabled .'>previous</button></a>';
+			echo '<a href="' . ROOT_PATH . 'user/account/' . $view_data['user_data']->login . '?p=' . ($view_data['curr_page'] + 1) . '"><button>next</button></a>';
 		?>
 
 </div>

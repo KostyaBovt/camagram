@@ -43,8 +43,20 @@
 			$this->_user_data = $this->_user_model->getUserData($user);
 
 			$view_data['user_data'] = $this->_user_data;
+
+
+			$page = 1;
+			if (isset($this->_params_get['p'])) {
+				$page = (int)$this->_params_get['p'];
+				if ($page < 1) {
+					$page = 1;
+				}
+			}
+
+			$view_data['curr_page'] = $page;
+
 			if ($this->_user_data) {
-				$view_data['gallery_data'] = $gallery_model->getUserGallery($this->_user_data->id);
+				$view_data['gallery_data'] = $gallery_model->getUserGallery($this->_user_data->id, $page);
 			} 
 			$this->displayView(NULL, $view_data, 'account.php');
 		}
