@@ -10,7 +10,8 @@
 		} else {
 			$disabled = '';
 		}
-		echo '<a href="' . ROOT_PATH . 'home/index?p=' . ($view_data['curr_page'] - 1) . '"><button' . $disabled .'>previous</button></a>';
-		echo '<a href="' . ROOT_PATH . 'home/index?p=' . ($view_data['curr_page'] + 1) . '"><button>next</button></a>';
+
+		echo '<div style="clear:both;" ><a href="' . ROOT_PATH . 'home/index?p=' . ($view_data['curr_page'] - 1) . '"><button' . $disabled .'>previous</button></a>';
+		echo '<a href="' . ROOT_PATH . 'home/index?p=' . ($view_data['curr_page'] + 1) . '"><button>next</button></a></div>';
 	?>
 </div>

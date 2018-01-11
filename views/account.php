@@ -39,8 +39,8 @@
 
 			vdf($view_data, 'view_data');
 
-			echo '<a href="' . ROOT_PATH . 'user/account/' . $view_data['user_data']->login . '?p=' . ($view_data['curr_page'] - 1) . '"><button' . $disabled .'>previous</button></a>';
-			echo '<a href="' . ROOT_PATH . 'user/account/' . $view_data['user_data']->login . '?p=' . ($view_data['curr_page'] + 1) . '"><button>next</button></a>';
+			echo '<div style="clear:both;" ><a href="' . ROOT_PATH . 'user/account/' . $view_data['user_data']->login . '?p=' . ($view_data['curr_page'] - 1) . '"><button' . $disabled .'>previous</button></a>';
+			echo '<a href="' . ROOT_PATH . 'user/account/' . $view_data['user_data']->login . '?p=' . ($view_data['curr_page'] + 1) . '"><button>next</button></a></div>';
 		?>
 
 </div>
