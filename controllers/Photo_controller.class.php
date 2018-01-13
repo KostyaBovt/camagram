@@ -35,11 +35,10 @@
 			
 			$this->_photo_model = new Photo_model();
 			
-			if ($this->_params[0]) {
+			if (isset($this->_params[0]) && $this->_params[0]) {
 				$this->_photo_data = $this->_photo_model->getPhotoData($this->_params[0]);
 
 				$this->_photo_user = new User_controller($action, $params, $params_get);
-				// var_dump($this->_photo_data);
 				$this->_photo_user->find_user(array('id' => $this->_photo_data->user_id));
 
 				$this->_photo_likes = $this->_photo_model->getPhotoLikes($this->_photo_data->id);
@@ -47,6 +46,9 @@
 				$this->_photo_comments = $this->_photo_model->getPhotoComments($this->_photo_data->id);
 
 				$this->_photo_is_liked = $this->photoIsLiked($this->_current_user, $this->_photo_likes);
+			} else {
+				header('Location: ' . ROOT_PATH .'home/index/');
+				die();
 			}
 		}
 
@@ -61,16 +63,10 @@
 			$view_data['current_user'] = $this->_current_user;
 			$view_data['js_file'] = 'photo.js';
 
-			// var_dump($view_data['photo_likes']);
-			// echo '<br/><br/><br/>';
-			// var_dump($view_data['photo_comments']);
-			// echo '<br/><br/>';
-			// var_dump($view_data['photo_is_liked']);
 			$this->displayView(NULL, $view_data, 'views/photo.php');
 		}
 
 		public function like() {
-			// var_dump($this->_current_user->exists());
 			if ($this->_current_user->exists()) {
 				$this->_photo_model->addPhotoLike($this->_photo_data->id, $this->_current_user->getUserData()->id);
 			}

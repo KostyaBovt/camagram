@@ -41,8 +41,6 @@
 			}
 
 			$route = explode('/', $parsed_uri['path']);
-			// var_dump($route);
-			// die();
 			$indexes = self::getRouteIndexes();
 
 			if (!empty($route[$indexes['controller']])) {

@@ -7,6 +7,9 @@
 							ON comments.user_id = users.id 
 							WHERE comments.id = ?', 
 							array($comment_id));
+			if (empty($this->results())) {
+				return NULL;
+			}
 			return $this->results()[0];
 		}
 

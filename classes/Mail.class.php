@@ -43,7 +43,7 @@
 
 		static function sendResetPassword($name, $to_email, $email_hash, $reset_hash) {
 			$subject = "Camagram - Reset the password";
-			$message = "Hello, " . $name . "!<br/><br/>".
+			$message = "Hello, " . $name . "!<br/><br/>";
 			$message .= "Forgot your password on Camagram?<br/>";
 			$message .= "Please, following the link below to reset the password:";
 			$message .= ROOT_URL . "user/reset/" . $email_hash . "/" . $reset_hash;
@@ -56,7 +56,7 @@
 
 		static function sendCommentNotification($name, $name_commented, $comment, $photo_index, $to_email) {
 			$subject = "Camagram - Someone commented your photo";
-			$message = "Hello, " . $name . "!<br/><br/>".
+			$message = "Hello, " . $name . "!<br/><br/>";
 			$message .= "Your photo was commented by " . $name_commented . ":<br/>";
 			$message .= "\"" . $comment . "\"<br/>";
 			$message .= "You can following the link below to answer the comment:";

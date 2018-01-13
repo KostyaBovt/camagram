@@ -21,7 +21,9 @@
 		}
 
 		public function confirm() {
-			$this->_user_model->confirm($this->_params);
+			 if (isset($this->_params[0]) || isset($this->_params[1])) {
+				$this->_user_model->confirm($this->_params);
+			}
 		}
 
 		public function login() {
@@ -88,7 +90,11 @@
 
 		public function reset() {
 			$view_data = array();
-			// var_dump($_POST);
+
+			$view_data['hashes'] = array(
+				'email_hash' => NULL,
+				'reset_hash' => NULL
+			);
 
 			if (isset($this->_params[0]) && isset($this->_params[1])) {
 				$view_data['hashes'] = array(

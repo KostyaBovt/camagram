@@ -4,6 +4,9 @@
 
 			$page = 1;
 			if (isset($this->_params_get['p'])) {
+				if (strlen($this->_params_get['p']) > 17) {
+					$this->_params_get['p'] = '1';
+				}
 				$page = (int)$this->_params_get['p'];
 				if ($page < 1) {
 					$page = 1;

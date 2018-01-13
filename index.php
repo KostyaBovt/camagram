@@ -18,8 +18,6 @@
 	$rootPath = dirname($_SERVER['DOCUMENT_ROOT']);
 	$url = current(array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))));
 	$url2 = $_SERVER['REQUEST_URI'];
-	// vdf($rootPath, 'root_path');
-	// vdf($url2, 'url');
 
 	spl_autoload_register(function($class) {
 		$sources = array(

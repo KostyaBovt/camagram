@@ -21,6 +21,12 @@
 	    }
 
 		public function Shot() {
+			if (!isset($_POST['image']) ||
+				!isset($_POST['sticker_id'])) {
+				return;
+			}
+
+
 			$data = explode(',', $_POST['image']);
 			$data = str_replace(' ', '+', $data);
 
