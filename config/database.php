@@ -1,7 +1,13 @@
 <?php
-	define('DB_DSN', 'mysql:dbname=camagram;host=localhost;charset=utf8');
-	define('DB_USER', 'root');
-	define('DB_PASSWORD', 'dobro27a');
+	$DB_DSN = 'mysql:host=localhost;charset=utf8';
+	$DB_USER ='root';
+	$DB_PASSWORD = 'dobro27a';
+	$DB_NAME = 'camagram';
+
+	define('DB_DSN', $DB_DSN);
+	define('DB_USER', $DB_USER);
+	define('DB_PASSWORD', $DB_PASSWORD);
+	define('DB_NAME', $DB_NAME);
 
 	define('ROOT_PATH', '/');
 	define('IMG_PATH', ROOT_PATH . 'assets/img/');

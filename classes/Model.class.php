@@ -10,6 +10,7 @@
 		public function __construct() {
 			try {
 				$this->_pdo = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
+				$this->_pdo->query("use " . DB_NAME);
 				$this->_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);	
 			} catch (PDOException $e) {
 				echo 'Coonection failed: ' . $e->getMessage();

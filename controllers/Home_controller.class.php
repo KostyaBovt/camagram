@@ -18,11 +18,10 @@
 
 		public function install() {
 			
-			$sql = file_get_contents('camagram.sql');
+			$sql = file_get_contents('dump.sql');
 			
 			try {
-				$db_dsn = 'mysql:host=localhost;charset=utf8';
-				$pdo = new PDO($db_dsn, DB_USER, DB_PASSWORD);
+				$pdo = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
 				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);	
 			} catch (PDOException $e) {
 				echo 'Coonection failed: ' . $e->getMessage();
@@ -34,8 +33,10 @@
 			catch (PDOException $e)
 			{
 			    echo $e->getMessage();
+			    $pdo = NULL;
 			    die();
 			}
+			$pdo = NULL;
 			header('Location: ' . ROOT_PATH . 'home/index');
 
 		}

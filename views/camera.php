@@ -250,6 +250,7 @@ document.getElementById('postbutton').addEventListener('click', function() {
         var videoImg = document.getElementById("video_sticker");
         videoImg.src = "";
         currentSticker = null;
+        photoUploaded = null;
 		} else if (xhr.readyState == 4){
       alert("Some error occured!!!");
     }
