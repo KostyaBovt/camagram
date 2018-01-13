@@ -1,6 +1,12 @@
 <?php
 	class Camera_controller extends Controller {
 		public function Index() {
+			$user = new User_controller($this->_action, $this->_params, $this->_params_get);
+			$user->find_user();
+			if (!$user->exists()) {
+				header('Location: ' . ROOT_PATH .'home/index');
+				die();
+			}
 			$camera_model = new Camera_model();
 			$view_data['stickers'] = $camera_model->getStickersData();
 			$this->displayView(NULL, $view_data, 'views/camera.php');

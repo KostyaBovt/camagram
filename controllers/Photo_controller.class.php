@@ -37,6 +37,10 @@
 			
 			if (isset($this->_params[0]) && $this->_params[0]) {
 				$this->_photo_data = $this->_photo_model->getPhotoData($this->_params[0]);
+				if (!$this->_photo_data) {
+					header('Location: ' . ROOT_PATH .'home/index/');
+					die();
+				}
 
 				$this->_photo_user = new User_controller($action, $params, $params_get);
 				$this->_photo_user->find_user(array('id' => $this->_photo_data->user_id));
