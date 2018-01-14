@@ -14,5 +14,5 @@
 	define('AVA_PATH', ROOT_PATH . 'assets/avatars/');
 	define('PHOTO_PATH', ROOT_PATH . 'assets/photos/');
 	define('JS_PATH', ROOT_PATH . 'assets/js/');
-	define('ROOT_URL', 'http://camagru.com' . ROOT_PATH);
+	define('ROOT_URL', 'http://localhost:8080' . ROOT_PATH);
 ?>
