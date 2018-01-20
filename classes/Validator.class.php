@@ -66,6 +66,7 @@
 
 		public function addError($error) {
 			$this->_errors[] = $error;
+			$this->_passed = FALSE;
 		}
 
 		public function errors() {

@@ -16,8 +16,8 @@
 					),
 					'password' => array(
 						'required' => TRUE,
-						'min' => 8,
-						'max' => 20
+							// 'min' => 8,
+							// 'max' => 20
 					),
 					'repeat_password' => array(
 						'required' => TRUE,
@@ -32,6 +32,19 @@
 						'filter' => 'FILTER_VALIDATE_EMAIL'
 					),
 				));
+
+				if (isset($post['login']) && $post['login']) {
+					if (!preg_match('/^[a-zA-Z0-9_\-\.]*$/', $post['login'])) {
+						$validator->addError("Login must contain only chars and nums and _ - .");
+					}
+				}
+
+				if (isset($post['password']) && $post['password']) {
+					if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,20}$/', $post['password'])) {
+						$validator->addError("Password must be from 8 to 20 symbols");
+						$validator->addError("Password must contain at least one letter, one number and one special character from $@$!%*#?&");
+					}
+				}
 
 				if (!$validator->passed()) {
 					$error_messages = $validator->errors();

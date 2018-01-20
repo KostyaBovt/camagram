@@ -5,10 +5,11 @@
 		protected $_params_get;
 
 		
-		public function __construct($action, $params, $params_get) {
+		public function __construct($action, $params, $params_get, $params_post) {
 			$this->_action = $action;
 			$this->_params = $params;
 			$this->_params_get = $params_get;
+			$this->_params_post = $params_post;
 		}
 
 		public function executeAction() {

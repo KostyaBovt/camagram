@@ -7,14 +7,14 @@
 		protected $_photo_data;
 		protected $_photo_model;
 
-		public function __construct($action, $params, $params_get) {
-			parent::__construct($action, $params, $params_get);
+		public function __construct($action, $params, $params_get, $params_post) {
+			parent::__construct($action, $params, $params_get, $params_post);
 		
 			if (!isset($this->_params[0]) || !$this->_params[0]) {
 				header('Location: ' . ROOT_PATH .'home/index/');
 				die();
 			}
-			$this->_current_user = new User_controller($action, $params, $params_get);
+			$this->_current_user = new User_controller($action, $params, $params_get, $params_post);
 			$this->_current_user->find_user();
 			$this->_comment_model = new Comment_model();
 			$this->_comment_data = $this->_comment_model->getCommentData($this->_params[0]);
@@ -23,7 +23,7 @@
 				die();
 			}
 			
-			$this->_comment_user = new User_controller($action, $params, $params_get);
+			$this->_comment_user = new User_controller($action, $params, $params_get, $params_post);
 			$this->_comment_user->find_user(array('id' => $this->_comment_data->user_id));
 
 			$this->_photo_model = new Photo_model();

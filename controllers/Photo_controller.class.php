@@ -27,10 +27,10 @@
 			return FALSE;
 		}
 
-		public function __construct($action, $params, $params_get) {
-			parent::__construct($action, $params, $params_get);
+		public function __construct($action, $params, $params_get, $params_post) {
+			parent::__construct($action, $params, $params_get, $params_post);
 
-			$this->_current_user = new User_controller($action, $params, $params_get);
+			$this->_current_user = new User_controller($action, $params, $params_get, $params_post);
 			$this->_current_user->find_user();
 			
 			$this->_photo_model = new Photo_model();
@@ -42,7 +42,7 @@
 					die();
 				}
 
-				$this->_photo_user = new User_controller($action, $params, $params_get);
+				$this->_photo_user = new User_controller($action, $params, $params_get, $params_post);
 				$this->_photo_user->find_user(array('id' => $this->_photo_data->user_id));
 
 				$this->_photo_likes = $this->_photo_model->getPhotoLikes($this->_photo_data->id);
@@ -80,7 +80,8 @@
 
 		public function comment() {
 			if ($this->_current_user->exists() && $this->_params[0] && $_POST['comment'] != '' && $_POST['submit']) {
-				$this->_photo_model->addPhotoComment($this->_photo_data->id, $this->_current_user->getUserData()->id, $_POST['comment']);
+				
+				$this->_photo_model->addPhotoComment($this->_photo_data->id, $this->_current_user->getUserData()->id, htmlspecialchars($_POST['comment'], ENT_QUOTES));
 				if ($this->_current_user->getUserData()->id != $this->_photo_user->getUserData()->id) {
 					$current_user = $this->_current_user->getUserData();
 					$photo_user = $this->_photo_user->getUserData();

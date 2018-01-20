@@ -260,6 +260,9 @@ document.getElementById('postbutton').addEventListener('click', function() {
 function handleFileSelect(evt) {
     var file = evt.target.files[0]; // FileList object
 
+    if (!file) {
+      return;
+    }
     // Only process image files.
     if (file.size > 5242880) {
       alert("too large. max 5 mb!!");

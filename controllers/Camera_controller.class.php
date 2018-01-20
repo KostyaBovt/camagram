@@ -1,7 +1,7 @@
 <?php
 	class Camera_controller extends Controller {
 		public function Index() {
-			$user = new User_controller($this->_action, $this->_params, $this->_params_get);
+			$user = new User_controller($this->_action, $this->_params, $this->_params_get, $this->_params_post);
 			$user->find_user();
 			if (!$user->exists()) {
 				header('Location: ' . ROOT_PATH .'home/index');
@@ -29,11 +29,21 @@
 		public function Shot() {
 			if (!isset($_POST['image']) ||
 				!isset($_POST['sticker_id'])) {
-				return;
+				echo json_encode(['code' => '0']);
+				return;	
 			}
 
+			if (!in_array($_POST['sticker_id'], [1, 2, 3, 4, 5])) {
+				echo json_encode(['code' => '0']);
+				return;	
+			}		
 
 			$data = explode(',', $_POST['image']);
+			if (count($data) != 2) {
+				echo json_encode(['code' => '0']);
+				return;				
+			}
+
 			$data = str_replace(' ', '+', $data);
 
 			$B = strlen($data[1]) / 1.37;
@@ -45,14 +55,16 @@
 			}
 
 			$content = base64_decode($data[1]);
-			
-			$mime_type = explode(":", explode(";", $data[0])[0])[1];
+			if (!$content) {
+				echo json_encode(['code' => '0']);
+				return;				
+			}
 
-			switch ($mime_type) {
-				case 'image/jpeg':
+			switch ($data[0]) {
+				case 'data:image/jpeg;base64':
 					$ext = 'jpg';
 					break;
-				case 'image/png':
+				case 'data:image/png;base64':
 					$ext = 'png';
 					break;
 				default:
@@ -66,17 +78,20 @@
 			}
 
 			$tmp_file_name = Hash::generate(10) . '.' . $ext;
-			$source = imagecreatefromstring($content);
+			$source = @imagecreatefromstring($content);
+			if (!$source) {
+				echo json_encode(['code' => '0']);
+				return;
+			}
 
-			// png
 			if ($ext == 'png') {
-				if (!$imageSave = imagepng($source, 'assets/tmp/' . $tmp_file_name, 0)) {
+				if (!$imageSave = @imagepng($source, 'assets/tmp/' . $tmp_file_name, 0)) {
 					echo json_encode(['code' => '0']);
 					return;
 				}
 				$tmp_img_source = imagecreatefrompng('assets/tmp/' . $tmp_file_name);
 			} else {
-				if (!$imageSave = imagejpeg($source, 'assets/tmp/' . $tmp_file_name, 100)) {
+				if (!$imageSave = @imagejpeg($source, 'assets/tmp/' . $tmp_file_name, 100)) {
 					echo json_encode(['code' => '0']);
 					return;
 				}

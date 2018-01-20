@@ -3,8 +3,8 @@
 		protected $_user_data;
 		protected $_user_model;
 		
-		public function __construct($action, $params, $params_get) {
-			parent::__construct($action, $params, $params_get);
+		public function __construct($action, $params, $params_get, $params_post) {
+			parent::__construct($action, $params, $params_get, $params_post);
 			$this->_user_model = new User_model();
 		}
 
@@ -64,18 +64,18 @@
 		}
 
 		public function forgot() {
+			$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 			if (isset($_POST['submit']) && $_POST['email']) {
-				$this->find_user(array('email' => $_POST['email']));
+				$this->find_user(array('email' => $post['email']));
 				if (!$this->exists()) {
 					Message::put('User with such email doesn`t exist', 'forgot_fail');
 					header('Location: ' . ROOT_PATH .'user/forgot');
 					die();
 				} else {
-					var_dump($this->_user_data);
 					$reset_hash = Hash::generate(32);
 					$email_hash = Hash::make($this->_user_data->email);
 					if ($this->_user_model->addResetHash($this->_user_data->id, $reset_hash)) {
-						if (Mail::sendResetPassword($this->_user_data->login, $_POST['email'], $email_hash, $reset_hash)) {
+						if (Mail::sendResetPassword($this->_user_data->login, $post['email'], $email_hash, $reset_hash)) {
 							Message::put('We send you email to reset the password', 'forgot_success');
 						}
 					}					
@@ -89,6 +89,7 @@
 		} 
 
 		public function reset() {
+			$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 			$view_data = array();
 
 			$view_data['hashes'] = array(
@@ -103,9 +104,9 @@
 				);
 			}
 
-			if (isset($_POST['submit'])) {
+			if (isset($post['submit'])) {
 
-				$user_id = $this->_user_model->ckeckResetHash($_POST['reset_hash']);
+				$user_id = $this->_user_model->ckeckResetHash($post['reset_hash']);
 				if (!$user_id) {
 					Message::put(array('Incorrect link for password reset!'), 'reset_fail');
 					header('Location: ' . ROOT_PATH .'user/reset');
@@ -119,24 +120,32 @@
 					die();
 				}
 
-				if (Hash::make($this->_user_data->email) != $_POST['email_hash']) {
+				if (Hash::make($this->_user_data->email) != $post['email_hash']) {
 					Message::put(array('Incorrect link for password reset!'), 'reset_fail');
 					header('Location: ' . ROOT_PATH .'user/reset');					
 					die();
 				}
 
 				$validator = new Validator();
-				$validator->check($_POST, array(
+				$validator->check($post, array(
 					'password' => array(
 						'required' => TRUE,
-						'min' => 8,
-						'max' => 20
+						// 'min' => 8,
+						// 'max' => 20
 					),
 					'repeat_password' => array(
 						'required' => TRUE,
 						'matches' => 'password'
 					)
 				));
+
+				if (isset($post['password']) && $post['password']) {
+					if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,20}$/', $post['password'])) {
+						$validator->addError("Password must be from 8 to 20 symbols");
+						$validator->addError("Password must contain at least one letter, one number and one special character from $@$!%*#?&");
+					}
+				}
+
 				if (!$validator->passed()) {
 					Message::put($validator->errors(), 'reset_fail');
 					header('Location: ' . ROOT_PATH .'user/reset/' . $this->_params[0] . '/' . $this->_params[1]);
